@@ -8,8 +8,8 @@
 # ## Configuración
 # Se conservan la ruta y `header=True` del repositorio. Se leen los campos como texto
 # para detectar valores inválidos y no perder códigos con ceros iniciales.
-# El formato de fecha ISO es el supuesto de la conversión original; si S3 usa otro,
-# ajustar `formato_fecha` aquí y en el notebook 3 después de revisar los ejemplos.
+# La fuente tiene encabezado y las fechas vienen como `yyyyMMdd` (ejemplo: `20030721`),
+# según la revisión de S3 informada por el grupo.
 
 # %%
 from pyspark.sql import SparkSession, functions as F
@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 spark = SparkSession.builder.appName("AED_Precios").getOrCreate()
 spark.conf.set("spark.sql.legacy.timeParserPolicy", "CORRECTED")
 ruta_precios = "s3://aypmd-sources-uandes-2026/entrega2/precios_transaccionales/"
-formato_fecha = "yyyy-MM-dd"
+formato_fecha = "yyyyMMdd"
 max_muestra = 10000
 semilla = 42
 claves = ["cod_com", "cod_mz", "cod_pr"]

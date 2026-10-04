@@ -82,14 +82,17 @@ WHERE precio_clp IS NULL AND precio_uf IS NULL;
 
 ## Decisiones y verificaciones pendientes
 
-- Se mantienen las rutas originales, `header=True` y el separador CSV por defecto
-  (coma). El PDF menciona agregar nombres, pero no especifica completamente el
-  esquema crudo de las fuentes. Las validaciones detienen el proceso si faltan
-  columnas; revisar un archivo real antes de cambiar encabezado, separador u orden.
+- Se mantienen las rutas originales y el separador CSV por defecto (coma).
+  Construcciones y no_agricola se leen con `header=False`; precios transaccionales
+  y precios_uf con `header=True`, según la revisión de S3 informada por el grupo.
+  Construcciones recibe los diez nombres del Anexo. **Pendiente antes de ejecutar:**
+  confirmar el orden crudo completo de no_agricola para asignar sus nombres, incluidos
+  bienes comunes. Por ahora su validación de columnas detiene el notebook 2.
 - Se leen columnas como texto en lugar de inferir tipos para no perder códigos.
-  Las fechas usan `yyyy-MM-dd`, coherente con la conversión original, pero **su
-  formato real no está confirmado**. Ajustar los parámetros del AED y notebook 3
-  según las fuentes. No se adivina día/mes ni se cambia separador decimal.
+  Las fechas transaccionales usan `yyyyMMdd` (por ejemplo, `20030721`) en el AED y
+  notebook 3; precios_uf conserva `yyyy-MM-dd` y encabezado `date,uf`.
+  Falta confirmar el orden de las seis columnas transaccionales para renombrarlas.
+  No se cambia el separador decimal.
 - El catastro suma superficies y obtiene el año mínimo después de castear.
   Conserva todas las construcciones y los nulos sin rellenarlos arbitrariamente.
   Los casts estrictos fallan ante datos inválidos o desbordamiento de Int.

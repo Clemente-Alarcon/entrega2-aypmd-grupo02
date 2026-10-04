@@ -6,8 +6,8 @@
 # %% [markdown]
 # ## Configuración
 # Se conservan rutas fuente y lectura con encabezados. Se lee texto para controlar los casts.
-# Las fechas ISO son un supuesto del código original: comprobar los ejemplos de S3 y ajustar
-# los formatos si corresponde, manteniendo el mismo formato de escritura que en el AED.
+# Según la revisión de S3 del grupo, precios transaccionales tiene encabezado y fechas
+# `yyyyMMdd`; precios_uf tiene encabezado `date,uf` y fechas `yyyy-MM-dd`.
 
 # %%
 from pyspark.sql import SparkSession, functions as F
@@ -17,7 +17,7 @@ spark.conf.set("spark.sql.ansi.enabled", "true")
 spark.conf.set("spark.sql.legacy.timeParserPolicy", "CORRECTED")
 ruta_base = "s3://aypmd-sources-uandes-2026/entrega2"
 ruta_destino = "s3://grupo02-aypmd-uandes-2026/entrega2_procesado"
-formato_fecha_escritura = "yyyy-MM-dd"
+formato_fecha_escritura = "yyyyMMdd"
 formato_fecha_uf = "yyyy-MM-dd"
 claves = ["cod_com", "cod_mz", "cod_pr"]
 

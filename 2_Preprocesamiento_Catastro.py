@@ -84,15 +84,27 @@ def convertir(df, esquema):
 
 # %% [markdown]
 # ## Lectura y columnas esenciales
-# Se conservan rutas y `header=True`. El PDF describe el resultado, pero no confirma
-# encabezados, separador ni todas las columnas crudas de no_agricola. Si las columnas
-# no coinciden, se detiene la ejecución para revisar la fuente sin inventar su estructura.
+# Construcciones se lee sin encabezado y recibe los diez nombres del Anexo, sin `periodo`.
+# Se valida la cantidad de columnas antes de asignar sus nombres.
+# Pendiente: confirmar el orden completo de las columnas crudas de no_agricola,
+# incluidos los bienes comunes, para ajustar su lectura sin desplazar datos.
 # La lectura como texto conserva los códigos; los casts explícitos se hacen antes de agregar.
 # Los casts inválidos y el desbordamiento de Int detienen la ejecución (modo ANSI).
 
 # %%
-df_construcciones = spark.read.csv(ruta_construcciones, header=True, inferSchema=False)
-df_no_agricola = spark.read.csv(ruta_no_agricola, header=True, inferSchema=False)
+columnas_construcciones_origen = [
+    "cod_com", "cod_mz", "cod_pr", "numero_linea", "cod_calidad",
+    "cod_destino", "cod_material", "superficie_construida",
+    "cod_condicion_especial", "ano_construccion",
+]
+df_construcciones = spark.read.csv(ruta_construcciones, header=False, inferSchema=False)
+if len(df_construcciones.columns) != len(columnas_construcciones_origen):
+    raise ValueError(
+        f"construcciones: se esperaban {len(columnas_construcciones_origen)} columnas "
+        f"sin encabezado y se leyeron {len(df_construcciones.columns)}. Revise el CSV."
+    )
+df_construcciones = df_construcciones.toDF(*columnas_construcciones_origen)
+df_no_agricola = spark.read.csv(ruta_no_agricola, header=False, inferSchema=False)
 columnas_const = [c for c in esquema_construcciones if c != "periodo"]
 columnas_na = [c for c in esquema_no_agricola
                if c not in ["periodo", "superficie_total_construcciones", "ano_construccion"]]
